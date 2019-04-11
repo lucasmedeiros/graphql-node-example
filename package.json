@@ -1,0 +1,20 @@
+{
+  "name": "graphql-node-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.2.1",
+    "graphql-tools": "^4.0.4",
+    "knex": "^0.16.3",
+    "mysql": "^2.16.0"
+  }
+}
