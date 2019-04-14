@@ -1,13 +1,15 @@
 const express = require('express')
 const graphqlHTTP = require('express-graphql')
-const { buildSchema } = require('graphql')
-const schema = require('./api/schema')
+const schema = require('./schema/schema')
+// const { buildSchema } = require('graphql')
 
-const App = express()
+const app = express()
 
-App.use('/api', graphqlHTTP({
+app.use('/api', graphqlHTTP({
     schema,
     graphiql: true
 }))
 
-App.listen(4000, () => console.log('Executando...'))
+app.listen(4000, () => {
+    console.log('Executando na porta 4000...')
+})
