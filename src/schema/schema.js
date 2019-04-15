@@ -1,4 +1,5 @@
 const graphql = require('graphql');
+const Movie = require('../models/movie.js');
 
 const {
     GraphQLObjectType,
@@ -38,6 +39,30 @@ const RootQueryType = new GraphQLObjectType({
     }
 });
 
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addMovie: {
+            type: MovieType,
+            args: {
+                name: { type: GraphQLString },
+                genre: { type: GraphQLString },
+                year: { type: GraphQLInt }
+            },
+            resolve (parent, args) {
+                const movie = new Movie({
+                    name: args.name,
+                    genre: args.genre,
+                    year: args.year
+                });
+
+                return movie.save();
+            }
+        }
+    }
+});
+
 module.exports = new GraphQLSchema({
-    query: RootQueryType
+    query: RootQueryType,
+    mutation: Mutation
 });
