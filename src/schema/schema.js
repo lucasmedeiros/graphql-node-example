@@ -7,6 +7,7 @@ const {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
+    GraphQLNonNull,
     GraphQLSchema
 } = graphql;
 
@@ -20,20 +21,21 @@ const MovieType = new GraphQLObjectType({
     })
 });
 
-const RootQueryType = new GraphQLObjectType({
+const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
         movie: {
             type: MovieType,
             args: {id: {type: GraphQLID}},
             resolve(parent, args) {
-                return 'movie, when ready...';
+                return Movie.findById(args.id);
             }
         },
+        
         movies: {
             type: new GraphQLList(MovieType),
             resolve(parent, args) {
-                return 'movies, when ready...';
+                return Movie.find({});
             }
         }
     }
@@ -45,9 +47,9 @@ const Mutation = new GraphQLObjectType({
         addMovie: {
             type: MovieType,
             args: {
-                name: { type: GraphQLString },
-                genre: { type: GraphQLString },
-                year: { type: GraphQLInt }
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                genre: { type: new GraphQLNonNull(GraphQLString) },
+                year: { type: new GraphQLNonNull(GraphQLInt) }
             },
             resolve (parent, args) {
                 const movie = new Movie({
@@ -58,11 +60,24 @@ const Mutation = new GraphQLObjectType({
 
                 return movie.save();
             }
+        },
+
+        deleteMovie: {
+            type: MovieType,
+            args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+            resolve (parent, args) {
+                const removed = Movie.findByIdAndDelete(args.id).exec();
+
+                if (!removed)
+                    throw new Error('Falha ao deletar filme: ID especificado não existe');
+
+                return removed;
+            }
         }
     }
 });
 
 module.exports = new GraphQLSchema({
-    query: RootQueryType,
+    query: RootQuery,
     mutation: Mutation
 });
