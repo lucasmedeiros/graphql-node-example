@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 const getMoviesQuery = gql`
 {
 	movies {
+    id
     name
     genre
     year
@@ -15,17 +16,15 @@ const getMoviesQuery = gql`
 class MovieList extends Component {
   displayMovies() {
     let data = this.props.data;
-    if (data.loading) {
+
+    return (data.loading) ? (
+      <div>Carregando filmes...</div>
+    ) : data.movies.map(movie => {
       return(
-        <div>Carregando filmes...</div>
+        <li key={ movie.id }> { movie.name } - { movie.genre } - { movie.year }</li>
       );
-    } else {
-      return data.movies.map(movie => {
-        return(
-          <li>{ movie.name } - { movie.genre } - { movie.year }</li>
-        );
-      });
-    }
+    });
+    
   }
   render() {
     return (
