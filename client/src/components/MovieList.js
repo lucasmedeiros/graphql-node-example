@@ -1,16 +1,36 @@
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { getMoviesQuery } from '../queries/queries';
+import { deleteMovieMutation } from '../mutations/mutations'
 
 class MovieList extends Component {
+
+  deleteMovie(event, id) {
+    event.preventDefault();
+    this.props.deleteMovieMutation({
+      variables: {
+        id: id
+      },
+      refetchQueries: [{
+        query: getMoviesQuery
+      }]
+    });
+  }
+
   displayMovies() {
-    let data = this.props.data;
+    let data = this.props.getMoviesQuery;
 
     return (data.loading) ? (
       <div>Carregando filmes...</div>
     ) : data.movies.map(movie => {
       return(
-        <li key={ movie.id }> { movie.name } - { movie.genre } - { movie.year }</li>
+        <li key={ movie.id }>
+          { movie.name } - { movie.genre } - { movie.year }
+          <br/>
+          <a className="delete-btn" href="/" onClick={
+            (e) => { this.deleteMovie(e, movie.id) }
+          }> Excluir</a>
+        </li>
       );
     });
     
@@ -26,4 +46,7 @@ class MovieList extends Component {
   }
 }
 
-export default graphql(getMoviesQuery)(MovieList);
+export default compose(
+  graphql(getMoviesQuery, { name: "getMoviesQuery" }),
+  graphql(deleteMovieMutation, { name: "deleteMovieMutation" })
+)(MovieList);
