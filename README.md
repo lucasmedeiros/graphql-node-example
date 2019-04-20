@@ -1,6 +1,6 @@
 # GraphQL Node Example
 
-Pequena aplicação com React e MongoDB para requisições a uma API GraphQL.
+Pequena aplicação com React e MongoDB para requisições a uma API GraphQL, utilizando Aṕollo.
 
 ## Rodar
 
